@@ -14,6 +14,12 @@
     <input id="checkBoxId" type="checkbox" name="key">
     <button onclick="httpGet()">send</button>
 
+    <br/>
+    <hr/>
+
+    <button onclick="getInfo()" >GET INFO</button>
+    <div id="info"></div>
+
 <script>
 const url = window.location.href;
 function httpGet() {
@@ -25,6 +31,19 @@ function httpGet() {
     xmlHttp.send();
     return xmlHttp.responseText;
 }
+
+function getInfo() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+         document.getElementById("info").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", url + '/info', true);
+    xhttp.send();
+}
+
+var intervalID = window.setInterval(getInfo, 2000);
 </script>
 </body>
 </html>
