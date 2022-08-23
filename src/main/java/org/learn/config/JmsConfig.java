@@ -18,10 +18,6 @@ public class JmsConfig {
     private String brokerUsername;
     @Value("${spring.activemq.password}")
     private String brokerPassword;
-    @Value("${activemq.queue}")
-    private String queueName;
-    @Value("${activemq.topic}")
-    private String topicName;
 
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
@@ -34,16 +30,18 @@ public class JmsConfig {
 
     @Bean
     public JmsTemplate jmsQueueTemplate(ActiveMQConnectionFactory connectionFactory) {
-        JmsTemplate template = new JmsTemplate();
-        template.setConnectionFactory(connectionFactory);
-        return template;
+        return getJmsTemplate(connectionFactory, false);
     }
 
     @Bean
     public JmsTemplate jmsTopicTemplate(ActiveMQConnectionFactory connectionFactory) {
+        return getJmsTemplate(connectionFactory, true);
+    }
+
+    private JmsTemplate getJmsTemplate(ActiveMQConnectionFactory connectionFactory, boolean isPubSumDomain) {
         JmsTemplate template = new JmsTemplate();
         template.setConnectionFactory(connectionFactory);
-        template.setPubSubDomain(true);
+        template.setPubSubDomain(isPubSumDomain);
         return template;
     }
 }
