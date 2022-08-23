@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainController {
     @Value("${spring.application.name}")
     private String springApplicationName;
+    @Value("${index.page}")
+    private String indexPage;
 
     private Publisher publisher;
     private Producer producer;
@@ -26,13 +28,6 @@ public class MainController {
     @GetMapping("/status")
     public String status() {
         final String logMessage = "${spring.application.name}=[" + springApplicationName + "].\n" + "Working!";
-        log.info(logMessage);
-        return logMessage;
-    }
-
-    @GetMapping("/")
-    public String index() {
-        final String logMessage = "${spring.application.name}=[" + springApplicationName + "].\n" + "index!";
         log.info(logMessage);
         return logMessage;
     }

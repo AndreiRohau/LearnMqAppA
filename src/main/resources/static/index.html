@@ -1,0 +1,31 @@
+<br/>
+    <html>
+<head>
+    <title>Producer Main Page</title>
+</head>
+<body>
+    <h2>Producer Main Page</h2>
+    <hr/>
+    <p>Send a message to QUEUE</p>
+    <input id="queue" type="text" name="queue-key" value="0"/>
+    <button onclick="httpGet('queue')">send</button>
+
+    <br/>
+    <hr/>
+
+    <p>Send a message to TOPIC</p>
+    <input id="topic" type="text" name="topic-key" value="0"/>
+    <button onclick="httpGet('topic')">send</button>
+
+<script>
+const url = window.location.href;
+function httpGet(destination) {
+    var message = document.getElementById(destination).value;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", url + '/' + destination + '/' + message, false ); // false for synchronous request
+    xmlHttp.send();
+    return xmlHttp.responseText;
+}
+</script>
+</body>
+</html>
