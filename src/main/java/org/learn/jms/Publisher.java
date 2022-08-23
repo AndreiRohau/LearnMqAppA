@@ -6,7 +6,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Publisher {
+public class Publisher implements Sendable {
     private JmsTemplate jmsTopicTemplate;
     @Value("${activemq.topic}")
     private String topic;
@@ -16,7 +16,9 @@ public class Publisher {
         this.jmsTopicTemplate = jmsTopicTemplate;
     }
 
-    public void createTopic(String message) {
+    @Override
+    public void sendMessage(String message, boolean isPersistent) {
+        jmsTopicTemplate.setDeliveryPersistent(isPersistent);
         jmsTopicTemplate.convertAndSend(topic, message);
     }
 }

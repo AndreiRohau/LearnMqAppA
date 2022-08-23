@@ -6,7 +6,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Producer {
+public class Producer implements Sendable {
 
     private JmsTemplate jmsQueueTemplate;
     @Value("${activemq.queue}")
@@ -17,7 +17,9 @@ public class Producer {
         this.jmsQueueTemplate = jmsQueueTemplate;
     }
 
-    public void sendMessage(String message) {
+    @Override
+    public void sendMessage(String message, boolean isPersistent) {
+        jmsQueueTemplate.setDeliveryPersistent(isPersistent);
         jmsQueueTemplate.convertAndSend(queue, message);
     }
 }
