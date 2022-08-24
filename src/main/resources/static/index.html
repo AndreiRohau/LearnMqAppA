@@ -6,22 +6,15 @@
     <h2>Producer Main Page</h2>
     <hr/>
     <p>Produce an event</p>
-    <input type="radio" id="destination-q" name="destination-key" value="QUEUE" checked>
-    <label for="destination-q">QUEUE</label><br>
-    <input type="radio" id="destination-t" name="destination-key" value="TOPIC">
-    <label for="destination-t">TOPIC</label><br>
     <input id="inputId" type="text" name="key" value="0"/>
-    <input id="checkBoxId" type="checkbox" name="key">
     <button onclick="httpGet()">send</button>
 
 <script>
 const url = window.location.href;
 function httpGet() {
-    let destination = document.querySelector('input[name="destination-key"]:checked').value;
     let message = document.getElementById('inputId').value;
-    let isPersistent = document.getElementById('checkBoxId').checked;
     let xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", url + '/' + destination + '/?message=' + message + '&isPersistent=' + isPersistent, false ); // false for synchronous request
+    xmlHttp.open( "GET", url + message + '/', false ); // false for synchronous request
     xmlHttp.send();
     return xmlHttp.responseText;
 }

@@ -4,13 +4,9 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.annotation.EnableJms;
-import org.springframework.jms.core.JmsTemplate;
-
 
 @Configuration
-@EnableJms
-public class JmsConfig {
+public class Config {
 
     @Value("${spring.activemq.broker-url}")
     private String brokerUrl;
@@ -26,22 +22,5 @@ public class JmsConfig {
         connectionFactory.setUserName(brokerUsername);
         connectionFactory.setPassword(brokerPassword);
         return connectionFactory;
-    }
-
-    @Bean
-    public JmsTemplate jmsQueueTemplate(ActiveMQConnectionFactory connectionFactory) {
-        return getJmsTemplate(connectionFactory, false);
-    }
-
-    @Bean
-    public JmsTemplate jmsTopicTemplate(ActiveMQConnectionFactory connectionFactory) {
-        return getJmsTemplate(connectionFactory, true);
-    }
-
-    private JmsTemplate getJmsTemplate(ActiveMQConnectionFactory connectionFactory, boolean isPubSumDomain) {
-        JmsTemplate template = new JmsTemplate();
-        template.setConnectionFactory(connectionFactory);
-        template.setPubSubDomain(isPubSumDomain);
-        return template;
     }
 }
