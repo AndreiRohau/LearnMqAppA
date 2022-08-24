@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.jms.JMSException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +54,7 @@ public class MainController {
     }
 
     @GetMapping("/{destination}/")
-    public String sendMessageToDestination(@PathVariable Destination destination, @RequestParam String message, @RequestParam boolean isPersistent) {
+    public String sendMessageToDestination(@PathVariable Destination destination, @RequestParam String message, @RequestParam boolean isPersistent) throws JMSException {
         final String logMessage = "${spring.application.name}=[" + springApplicationName + "].\n" + "Message to "
                 + destination + "=[" + message + "]. Persistance=[" + isPersistent + "].";
         log.info(logMessage);
