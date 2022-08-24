@@ -27,7 +27,7 @@ function httpGet() {
     let message = document.getElementById('inputId').value;
     let isPersistent = document.getElementById('checkBoxId').checked;
     let xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", url + '/' + destination + '/?message=' + message + '&isPersistent=' + isPersistent, false ); // false for synchronous request
+    xmlHttp.open( "GET", url + '/' + destination + '/?message=' + message + '&isPersistent=' + isPersistent, true ); // false for synchronous request
     xmlHttp.send();
     return xmlHttp.responseText;
 }
