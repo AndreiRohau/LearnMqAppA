@@ -44,15 +44,15 @@ public class RequestProcessor {
         return connection.createSession(transacted, ackMode);
     }
 
-    private void setListener(Session session, Destination tempDest) throws JMSException {
-        MessageConsumer responseConsumer = session.createConsumer(tempDest);
+    private void setListener(Session session, Destination temporaryQueue) throws JMSException {
+        MessageConsumer responseConsumer = session.createConsumer(temporaryQueue);
         responseConsumer.setMessageListener(messageListener);
     }
 
-    private TextMessage prepareMessage(Session session, String message, Destination tempDest) throws JMSException {
+    private TextMessage prepareMessage(Session session, String message, Destination temporaryQueue) throws JMSException {
         TextMessage txtMessage = session.createTextMessage();
         txtMessage.setText(message);
-        txtMessage.setJMSReplyTo(tempDest);
+        txtMessage.setJMSReplyTo(temporaryQueue);
         txtMessage.setJMSCorrelationID(Util.createRandomString());
         return txtMessage;
     }
