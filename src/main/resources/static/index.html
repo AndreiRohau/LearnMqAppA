@@ -6,9 +6,7 @@
     <h2>Producer Main Page</h2>
     <hr/>
     <p>Produce an event</p>
-    <input type="radio" id="destination-q" name="destination-key" value="QUEUE" checked>
-    <label for="destination-q">QUEUE</label><br>
-    <input type="radio" id="destination-t" name="destination-key" value="TOPIC">
+    <input type="radio" id="destination-t" name="destination-key" value="TOPIC" checked>
     <label for="destination-t">TOPIC</label><br>
     <input id="inputId" type="text" name="key" value="0"/>
     <input id="checkBoxId" type="checkbox" name="key">
@@ -43,7 +41,6 @@ function getInfo() {
     xhttp.send();
 }
 
-var intervalID = window.setInterval(getInfo, 2000);
 </script>
 </body>
 </html>

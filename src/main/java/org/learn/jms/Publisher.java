@@ -1,11 +1,10 @@
 package org.learn.jms;
 
+import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
-
-import static org.learn.jms.Destination.TOPIC;
 
 @Component
 public class Publisher implements Sendable {
@@ -21,7 +20,6 @@ public class Publisher implements Sendable {
     @Override
     public void sendMessage(String message, boolean isPersistent) {
         jmsTopicTemplate.setDeliveryPersistent(isPersistent);
-        jmsTopicTemplate.convertAndSend(topic, message);
-        TOPIC.riseEmitted();
+        jmsTopicTemplate.convertAndSend(new ActiveMQTopic("VirtualTopic.MY-SUPER-TOPIC"), message);
     }
 }
