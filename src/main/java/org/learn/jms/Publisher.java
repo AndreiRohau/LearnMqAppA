@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class Publisher implements Sendable {
     private JmsTemplate jmsTopicTemplate;
     @Value("${activemq.topic}")
-    private String topic;
+    private String topicName;
 
     @Autowired
     public Publisher(JmsTemplate jmsTopicTemplate) {
@@ -20,6 +20,6 @@ public class Publisher implements Sendable {
     @Override
     public void sendMessage(String message, boolean isPersistent) {
         jmsTopicTemplate.setDeliveryPersistent(isPersistent);
-        jmsTopicTemplate.convertAndSend(new ActiveMQTopic("VirtualTopic.MY-SUPER-TOPIC"), message);
+        jmsTopicTemplate.convertAndSend(new ActiveMQTopic(topicName), message);
     }
 }
