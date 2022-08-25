@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
+import static org.learn.jms.Destination.TOPIC;
+
 @Component
 public class Publisher implements Sendable {
-    private JmsTemplate jmsTopicTemplate;
     @Value("${activemq.topic}")
     private String topic;
+    private final JmsTemplate jmsTopicTemplate;
 
     @Autowired
     public Publisher(JmsTemplate jmsTopicTemplate) {
@@ -20,5 +22,6 @@ public class Publisher implements Sendable {
     public void sendMessage(String message, boolean isPersistent) {
         jmsTopicTemplate.setDeliveryPersistent(isPersistent);
         jmsTopicTemplate.convertAndSend(topic, message);
+        TOPIC.riseEmitted();
     }
 }

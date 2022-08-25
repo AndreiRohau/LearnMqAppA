@@ -7,11 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.core.JmsTemplate;
 
-
 @Configuration
 @EnableJms
 public class JmsConfig {
-
     @Value("${spring.activemq.broker-url}")
     private String brokerUrl;
     @Value("${spring.activemq.user}")
