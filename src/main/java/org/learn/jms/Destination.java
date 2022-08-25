@@ -28,4 +28,5 @@ public enum Destination {
     public StringBuilder getStringBuilder() {
         return stringBuilder;
     }
+
 }

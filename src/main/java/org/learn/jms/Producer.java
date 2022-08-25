@@ -16,10 +16,9 @@ import static org.learn.jms.Destination.QUEUE;
 @Slf4j
 @Component
 public class Producer {
-
-    private final JmsTemplate jmsQueueTemplate;
     @Value("${activemq.queue}")
     private String queue;
+    private final JmsTemplate jmsQueueTemplate;
 
     @Autowired
     public Producer(JmsTemplate jmsQueueTemplate) {

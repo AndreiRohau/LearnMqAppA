@@ -33,7 +33,7 @@ public class MainController {
     @GetMapping("/info")
     public String getInfo() {
         log.info("CALLED: /info");
-        return "QUEUE:EMITTED/PROCESSED=[" + QUEUE.getEmitted() + "/" + QUEUE.getProcessed() + "] <br/> " +
+        return "QUEUE:EMITTED/PROCESSED=[" + QUEUE.getEmitted() + "/" + QUEUE.getProcessed() + "]<br/>" +
                 QUEUE.getStringBuilder().toString();
     }
 
