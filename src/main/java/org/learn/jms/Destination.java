@@ -1,17 +1,15 @@
 package org.learn.jms;
 
 public enum Destination {
-    QUEUE, TOPIC;
+    QUEUE;
 
     private int emitted = 0;
     private int processed = 0;
-
-    private StringBuilder stringBuilder = new StringBuilder();
+    private final StringBuilder stringBuilder = new StringBuilder();
 
     public synchronized void riseEmitted() {
         emitted++;
     }
-
     public int getEmitted() {
         return emitted;
     }
@@ -19,7 +17,6 @@ public enum Destination {
     public synchronized void riseProcessed() {
         processed++;
     }
-
     public int getProcessed() {
         return processed;
     }
@@ -28,7 +25,6 @@ public enum Destination {
         stringBuilder.append(string);
         stringBuilder.append("<br/>");
     }
-
     public StringBuilder getStringBuilder() {
         return stringBuilder;
     }

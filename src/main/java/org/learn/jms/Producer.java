@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
 import javax.jms.JMSException;
@@ -14,28 +15,35 @@ import static org.learn.jms.Destination.QUEUE;
 
 @Slf4j
 @Component
-public class Producer implements Sendable {
+public class Producer {
 
-    private JmsTemplate jmsQueueTemplate;
+    private final JmsTemplate jmsQueueTemplate;
     @Value("${activemq.queue}")
     private String queue;
-    @Value("${activemq.response.queue}")
-    private String responseQueueName;
 
     @Autowired
     public Producer(JmsTemplate jmsQueueTemplate) {
         this.jmsQueueTemplate = jmsQueueTemplate;
     }
 
-    @Override
     public void sendMessage(String message, boolean isPersistent) throws JMSException {
-        jmsQueueTemplate.setDeliveryPersistent(isPersistent);
-        jmsQueueTemplate.convertAndSend(queue, message);
         QUEUE.riseEmitted();
-        String response = (String) jmsQueueTemplate.receiveAndConvert(responseQueueName);
-        String messageData = response;
-        log.info("Received message: " + messageData + ". From queue: " + responseQueueName);
+        jmsQueueTemplate.setDeliveryPersistent(isPersistent);
+        Message rawMessage = jmsQueueTemplate.sendAndReceive(queue, prepareMessageCreator(message));
+        TextMessage textMessage = (TextMessage) rawMessage;
+        String stringMessage = textMessage.getText();
+        log.info("RECEIVED==={}. Q={}.", stringMessage, textMessage.getJMSDestination());
         QUEUE.riseProcessed();
-        QUEUE.append(QUEUE.getProcessed() + ". " + messageData);
+        QUEUE.append(QUEUE.getProcessed() + ". " + stringMessage);
+    }
+
+    private MessageCreator prepareMessageCreator(final String message) {
+        return session -> {
+            TextMessage msg = session.createTextMessage();
+            msg.setText(message);
+            msg.setJMSReplyTo(session.createTemporaryQueue()); // NB! TEMPORARY QUEUE = no names
+            log.info("SENDING==={}. CorrId={}, dest_Q={}, reply_Q={}.", msg.getText(), msg.getJMSCorrelationID(), msg.getJMSDestination(),msg.getJMSReplyTo());
+            return msg;
+        };
     }
 }
