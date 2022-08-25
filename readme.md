@@ -1,4 +1,6 @@
-PRODUCER-SCALING-CONSUMER pattern
+# PRODUCER-SCALING-CONSUMER pattern
+
+Consumer is here https://github.com/AndreiRohau/LearnAppB/tree/mq/activemq/t3
 
 Producer emits events into a virtual topic.
 
