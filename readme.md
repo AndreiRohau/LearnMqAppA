@@ -1,7 +1,8 @@
 REQUEST-REPLY pattern
 
 Producer waits until request is processed and returned, therefore no Listeners required
-one queue for requests.
+
+Need only one queue for requests (request channel).
 
 Replies go to temporary queue, which is destroyed after response
 mq config xml is not touched.
