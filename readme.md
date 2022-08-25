@@ -1,4 +1,4 @@
-PUBLISHER SUBSCRIBER pattern
+# PUBLISHER-SUBSCRIBER pattern
 
 Subscriber is here https://github.com/AndreiRohau/LearnAppB/tree/mq/activemq/t1
 
