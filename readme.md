@@ -1,4 +1,4 @@
-REQUEST-PERLY pattern
+REQUEST-REPLY pattern
 
 Producer waits until request is processed and returned, therefore no Listeners required
 one queue for requests.
