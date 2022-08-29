@@ -1,18 +1,24 @@
 <html>
 <head>
-    <title>Producer Main Page</title>
+    <title>Publisher Main Page</title>
 </head>
 <body>
-    <h2>Producer Main Page</h2>
-    <hr/>
-    <p>Produce an event</p>
-    <input type="radio" id="destination-q" name="destination-key" value="QUEUE" checked>
-    <label for="destination-q">QUEUE</label><br>
-    <input type="radio" id="destination-t" name="destination-key" value="TOPIC">
-    <label for="destination-t">TOPIC</label><br>
-    <input id="inputId" type="text" name="key" value="0"/>
-    <input id="checkBoxId" type="checkbox" name="key">
-    <button onclick="httpGet()">send</button>
+<h2>Publisher Main Page</h2>
+<hr/>
+<p>Publish an event</p>
+<input type="radio" id="destination-q" name="destination-key" value="QUEUE" checked>
+<label for="destination-q">QUEUE</label><br>
+<input type="radio" id="destination-t" name="destination-key" value="TOPIC">
+<label for="destination-t">TOPIC</label><br>
+<input id="inputId" type="text" name="key" value="0"/>
+<input id="checkBoxId" type="checkbox" name="key">
+<button onclick="httpGet()">send</button>
+
+<br/>
+<hr/>
+
+<button id="sendBtnId" onclick="getInfo()" >GET INFO</button>
+<div id="info"></div>
 
 <script>
 const url = window.location.href;
@@ -25,6 +31,33 @@ function httpGet() {
     xmlHttp.send();
     return xmlHttp.responseText;
 }
+
+function getInfo() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+         document.getElementById("info").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", url + '/info', true); 
+    xhttp.send();
+}
+
+var intervalID = window.setInterval(getInfo, 2000);
+
+// Get the input field
+var input = document.getElementById("inputId");
+
+// Execute a function when the user presses a key on the keyboard
+input.addEventListener("keypress", function(event) {
+  // If the user presses the "Enter" key on the keyboard
+  if (event.key === "Enter") {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    document.getElementById("sendBtnId").click();
+  }
+});
 </script>
 </body>
 </html>
