@@ -3,8 +3,7 @@ package org.learn.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,33 +12,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@EnableBinding({Source.class})
 public class MainController {
     @Value("${spring.application.name}")
     private String springApplicationName;
     @Value("${routing.key.header}")
     private String routingKeyHeader;
-    @Value("${spring.cloud.stream.rabbit.bindings.input-queue1.consumer.bindingRoutingKey}")
+    @Value("${spring.cloud.stream.rabbit.bindings.queue1Sink-in-0.consumer.bindingRoutingKey}")
     private String routingKey;
-    @Value("${spring.cloud.stream.rabbit.bindings.input-queue2.consumer.bindingRoutingKey}")
+    @Value("${spring.cloud.stream.rabbit.bindings.queue2Sink-in-0.consumer.bindingRoutingKey}")
     private String routingKeyAnother;
 
-    private final Source source;
+    private final StreamBridge streamBridge;
 
     @Autowired
-    public MainController(final Source source) {
-        this.source = source;
+    public MainController(final StreamBridge streamBridge) {
+        this.streamBridge = streamBridge;
     }
 
     @GetMapping("/test")
     public String test() {
         log.info("test");
-        source.output().send(
+        streamBridge.send("source-out-0",
                 MessageBuilder
                         .withPayload("Nin hao queue1")
                         .setHeader(routingKeyHeader, routingKey)
                         .build());
-        source.output().send(
+        streamBridge.send("source-out-0",
                 MessageBuilder
                         .withPayload("Nin hao queue2")
                         .setHeader(routingKeyHeader, routingKeyAnother)
