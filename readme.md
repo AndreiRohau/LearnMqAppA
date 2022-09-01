@@ -1,5 +1,5 @@
 # Publisher and Triage(Support Stuff)
-Consumer is here https://github.com/AndreiRohau/LearnAppB/tree/
+Consumer is here https://github.com/AndreiRohau/LearnAppB/tree/mq/rabbitmq/t0-0
 
 rest info
 
