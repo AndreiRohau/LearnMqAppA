@@ -1,9 +1,11 @@
 package org.learn.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,28 +13,37 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@EnableBinding({Source.class})
 public class MainController {
     @Value("${spring.application.name}")
     private String springApplicationName;
-    @Value("${rmq.declare.exchange}")
-    private String exchangeName;
-    @Value("${rmq.declare.routing.key.1}")
+    @Value("${routing.key.header}")
+    private String routingKeyHeader;
+    @Value("${spring.cloud.stream.rabbit.bindings.input-queue1.consumer.bindingRoutingKey}")
     private String routingKey;
-    @Value("${rmq.declare.routing.key.2}")
+    @Value("${spring.cloud.stream.rabbit.bindings.input-queue2.consumer.bindingRoutingKey}")
     private String routingKeyAnother;
 
-    private final AmqpTemplate template;
+    private final Source source;
 
     @Autowired
-    public MainController(AmqpTemplate template) {
-        this.template = template;
+    public MainController(final Source source) {
+        this.source = source;
     }
 
     @GetMapping("/test")
     public String test() {
         log.info("test");
-        template.convertAndSend(exchangeName, routingKey, "Ninhao queue1");
-        template.convertAndSend(exchangeName, routingKeyAnother, "Ninhao queue2");
+        source.output().send(
+                MessageBuilder
+                        .withPayload("Nin hao queue1")
+                        .setHeader(routingKeyHeader, routingKey)
+                        .build());
+        source.output().send(
+                MessageBuilder
+                        .withPayload("Nin hao queue2")
+                        .setHeader(routingKeyHeader, routingKeyAnother)
+                        .build());
         return "!!Success!!@@";
     }
 
