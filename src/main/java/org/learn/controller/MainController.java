@@ -1,49 +1,55 @@
 package org.learn.controller;
 
+import com.rabbitmq.client.MessageProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.learn.jms.Destination;
+import org.learn.jms.Publisher;
+import org.learn.jms.RabbitEnvelope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.learn.jms.Destination.QUEUE;
-import static org.learn.jms.Destination.TOPIC;
 
 @Slf4j
 @RestController
 public class MainController {
     @Value("${spring.application.name}")
     private String springApplicationName;
-    @Value("${activemq.queue}")
+    @Value("${rmq.declare.exchange}")
+    private String exchangeName;
+    @Value("${rmq.declare.routing.key}")
+    private String routingKey;
+    @Value("${rmq.declare.queue}")
     private String queueName;
-    @Value("${activemq.topic}")
-    private String topicName;
 
-    private final JmsTemplate jmsQueueTemplate;
-    private final JmsTemplate jmsTopicTemplate;
-    private final Map<Destination, JmsTemplate> jmsTemplateMap = new HashMap<>();
-    private final Map<Destination, String> destinationNameMap = new HashMap<>();
+    private final Publisher publisher;
 
     @Autowired
-    public MainController(JmsTemplate jmsQueueTemplate, JmsTemplate jmsTopicTemplate) {
-        this.jmsQueueTemplate = jmsQueueTemplate;
-        this.jmsTopicTemplate = jmsTopicTemplate;
+    public MainController(Publisher publisher) {
+        this.publisher = publisher;
     }
 
     @PostConstruct
     private void postConstruct() {
-        jmsTemplateMap.put(QUEUE, jmsQueueTemplate);
-        jmsTemplateMap.put(TOPIC, jmsTopicTemplate);
-        destinationNameMap.put(QUEUE, queueName);
-        destinationNameMap.put(TOPIC, topicName);
+
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        log.info("test");
+        RabbitEnvelope envelope = RabbitEnvelope.builder()
+                .message("hi hi hi test msg")
+                .exchange(exchangeName)
+                .queue(exchangeName)
+                .routingKey(routingKey)
+                .isMandatory(true)
+                .properties(MessageProperties.PERSISTENT_TEXT_PLAIN)
+                .build();
+        publisher.publishEvent(envelope);
+        return "!!Success!!@@";
     }
 
     @GetMapping("/status")
@@ -55,21 +61,20 @@ public class MainController {
     @GetMapping("/info")
     public String getInfo() {
         log.info("CALLED: /info");
-        return "QUEUE:EMITTED/PROCESSED=[" + QUEUE.getEmitted() + "/" + QUEUE.getProcessed() + "] <br/> " +
-                "TOPIC:EMITTED/PROCESSED=[" + TOPIC.getEmitted() + "/" + TOPIC.getProcessed() + "] <br/> " +
-                QUEUE.getStringBuilder().toString();
+        return "stubbed call /info result <br/>";
     }
 
     @GetMapping("/{destination}/")
-    public String sendMessageToDestination(@PathVariable Destination destination, @RequestParam String message, @RequestParam boolean isPersistent) {
+    public String sendMessageToDestination(@PathVariable String destination, @RequestParam String message, @RequestParam boolean isPersistent) {
         log.info("[{}]." + "DEST=[{}]. MSG=[{}]. Persistence=[{}].", springApplicationName, destination, message, isPersistent);
         send(destination, message, isPersistent);
         return "sender.getClass().getSimpleName()" + " sent=[" + message + "].";
     }
 
-    private void send(Destination destination, String message, boolean isPersistent) {
-        JmsTemplate template = jmsTemplateMap.get(destination);
-        template.setDeliveryPersistent(isPersistent);
-        template.convertAndSend(destinationNameMap.get(destination), message);
+    private void send(String destination, String message, boolean isPersistent) {
+        log.info("send method worked");
+//        Object template = jmsTemplateMap.get(destination);
+//        template.setDeliveryPersistent(isPersistent);
+//        template.convertAndSend(destinationNameMap.get(destination), message);
     }
 }
