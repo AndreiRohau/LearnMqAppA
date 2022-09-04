@@ -37,11 +37,11 @@ public class MainController {
                         .withPayload("Nin hao queue1")
                         .setHeader(routingKeyHeader, routingKey)
                         .build());
-        streamBridge.send("source-out-0",
-                MessageBuilder
-                        .withPayload("Nin hao queue2")
-                        .setHeader(routingKeyHeader, routingKeyAnother)
-                        .build());
+//        streamBridge.send("source-out-0",
+//                MessageBuilder
+//                        .withPayload("Nin hao queue2")
+//                        .setHeader(routingKeyHeader, routingKeyAnother)
+//                        .build());
         return "!!Success!!@@";
     }
 
