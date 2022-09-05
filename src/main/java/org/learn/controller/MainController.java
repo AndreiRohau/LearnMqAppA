@@ -21,15 +21,11 @@ import java.util.Optional;
 @Slf4j
 @RestController
 public class MainController {
-    private static final String MESSAGE_EXCHANGE = "source1-out-0";
+    private static final String MESSAGE_EXCHANGE = "source-out-0";
+    private static final String routingKeyHeader = "myRoutingKey";
+    private static final String routingKey = "routing-queue1";
     @Value("${spring.application.name}")
     private String springApplicationName;
-    @Value("${routing.key.header}")
-    private String routingKeyHeader;
-    @Value("${mq.queue1Sink-in-0.consumer.bindingRoutingKey}")
-    private String routingKey;
-    @Value("${mq.init.q}")
-    private String initQ;
 
     private final StreamBridge streamBridge;
 
@@ -41,11 +37,14 @@ public class MainController {
     @GetMapping("/test")
     public String test() {
         log.info("test");
-        streamBridge.send(MESSAGE_EXCHANGE,
-                MessageBuilder
-                        .withPayload("Nin hao queue1")
-                        .setHeader(routingKeyHeader, routingKey)
-                        .build());
+        List<String> letters = List.of("a", "b", "c7", "d7", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n");
+        for (String letter : letters) {
+            streamBridge.send(MESSAGE_EXCHANGE,
+                    MessageBuilder
+                            .withPayload("Nin hao queue " + letter)
+                            .setHeader(routingKeyHeader, routingKey)
+                            .build());
+        }
         return "!!Success!!@@";
     }
 
@@ -72,14 +71,14 @@ public class MainController {
 
     @GetMapping("/source1-out-0/") // initQ
     public String sendMessageToDestination(@RequestParam String message) {
-        log.info("CALLED: #sendMessageToDestination destination={}. message={}", initQ, message);
+        log.info("CALLED: #sendMessageToDestination destination={}. message={}", MESSAGE_EXCHANGE, message);
         // destination = "source1-out-0"
-        streamBridge.send(initQ,
+        streamBridge.send(MESSAGE_EXCHANGE,
                 MessageBuilder
                         .withPayload(message)
                         .setHeader(routingKeyHeader, routingKey)
                         .build());
-        return "streamBridge.send([" + initQ + "], MessageBuilder.withPayload([" +
+        return "streamBridge.send([" + MESSAGE_EXCHANGE + "], MessageBuilder.withPayload([" +
                 message + "]).setHeader(routingKeyHeader, routingKey).build())";
     }
 
