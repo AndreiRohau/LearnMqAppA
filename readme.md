@@ -1,5 +1,5 @@
 # Publisher and Triage(Support Stuff)
-Consumer is here https://github.com/AndreiRohau/LearnAppB/tree/mq/rabbitmq/t3
+Consumer is here https://github.com/AndreiRohau/LearnAppB/tree/mq/rabbitmq/t3-f
 
 rest info
 
