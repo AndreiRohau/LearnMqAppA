@@ -5,3 +5,6 @@ rest info
 
 ![](rabbit-t3-task-text.png)
 ![](rabbit-t3-task-scheme.png)
+
+for rabbitmq hosting free.
+https://customer.cloudamqp.com/instance
