@@ -6,13 +6,10 @@
 <h2>Publisher Main Page</h2>
 <hr/>
 <p>Publish an event</p>
-<input type="radio" id="destination-q" name="destination-key" value="QUEUE" checked>
-<label for="destination-q">QUEUE</label><br>
-<input type="radio" id="destination-t" name="destination-key" value="TOPIC">
-<label for="destination-t">TOPIC</label><br>
-<input id="inputId" type="text" name="key" value="0"/>
-<input id="checkBoxId" type="checkbox" name="key">
-<button onclick="httpGet()">send</button>
+    <input type="hidden" id="destination-t" name="destination-key" value="source1-out-0"/><br>
+    <label for="inputId">message</label>
+    <input id="inputId" type="text" name="key" value="eleven11"/><br>
+    <button onclick="httpGet()">send</button>
 
 <br/>
 <hr/>
@@ -23,27 +20,39 @@
 <script>
 const url = window.location.href;
 function httpGet() {
-    let destination = document.querySelector('input[name="destination-key"]:checked').value;
+    let destination = document.getElementById('destination-t').value;
     let message = document.getElementById('inputId').value;
-    let isPersistent = document.getElementById('checkBoxId').checked;
     let xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", url + '/' + destination + '/?message=' + message + '&isPersistent=' + isPersistent, false ); // false for synchronous request
+    xmlHttp.open( 'GET', url + destination + '/?message=' + message, false ); // false for synchronous request
     xmlHttp.send();
     return xmlHttp.responseText;
 }
 
 function getInfo() {
-    var xhttp = new XMLHttpRequest();
+    let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-         document.getElementById("info").innerHTML = this.responseText;
+            let destination = document.getElementById('destination-t').value;
+            let message = this.responseText;
+            if (message.length === 0) {
+                alert("no failed messages in DATA STORE");
+            } else {
+                let newForm = '<form method="GET" action="' + url + destination + '/" onsubmit="check_form(); return false;">' +
+                    'message=<input id="inputId" type="text" name="message" value="' + message + '"/>' +
+                    '<button>RE-send</button> ' +
+                    '</form>';
+                let infoElement = document.getElementById("info");
+                console.log("infoElement", infoElement);
+                document.getElementById("info").innerHTML = newForm;
+                console.log("infoElement", infoElement);
+            }
         }
     };
-    xhttp.open("GET", url + '/info', true); 
+    xhttp.open("GET", url + 'info', true);
     xhttp.send();
 }
 
-var intervalID = window.setInterval(getInfo, 2000);
+<!--var intervalID = window.setInterval(getInfo, 2000);-->
 
 // Get the input field
 var input = document.getElementById("inputId");
