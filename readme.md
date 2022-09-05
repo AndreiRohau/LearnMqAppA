@@ -9,3 +9,6 @@ NBs
 dlqDeadLetterExchange= should be empty to route to original queue
 
 ![](rabbit-t1.png)
+
+for rabbitmq hosting free.
+https://customer.cloudamqp.com/instance
