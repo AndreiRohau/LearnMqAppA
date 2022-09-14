@@ -46,7 +46,7 @@ public class JmsConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, infrastructureConfig.getKafkaUrl());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MsgSerializer.class);
-//        props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
         return new DefaultKafkaProducerFactory<>(props);
     }
 
