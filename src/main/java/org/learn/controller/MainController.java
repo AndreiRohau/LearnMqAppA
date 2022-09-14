@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,7 @@ public class MainController {
     private ReplyingKafkaTemplate<String, Msg, Msg> replyingKafkaTemplate;
 
     @GetMapping("/v1/test")
+    @Transactional
     public String test() {
         log.info("test");
         final String ruid = UUID.randomUUID().toString();
@@ -41,6 +43,7 @@ public class MainController {
     }
 
     @GetMapping("/v2/test")
+    @Transactional
     public String testV2() {
         log.info("test");
         final Msg msg = new Msg(UUID.randomUUID().toString(), "head", "body", false);

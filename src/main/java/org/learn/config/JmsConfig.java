@@ -13,6 +13,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
+import org.springframework.kafka.transaction.KafkaTransactionManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,15 @@ public class JmsConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MsgSerializer.class);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+        // in prod, transaction IDs must be carefully mapped onto partitions!
+        props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "test_id");
         return new DefaultKafkaProducerFactory<>(props);
+    }
+
+    @Bean
+    public KafkaTransactionManager<String, Msg> kafkaTransactionManager(ProducerFactory<String, Msg> producerFactory) {
+        return new KafkaTransactionManager<>(producerFactory);
     }
 
     // Can send messages, sendAndReply
@@ -83,6 +92,9 @@ public class JmsConfig {
 //        props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 100);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MsgDeserializer.class);
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return new DefaultKafkaConsumerFactory<>(props);
     }
     @Bean
