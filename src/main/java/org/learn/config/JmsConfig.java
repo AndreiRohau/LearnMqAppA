@@ -33,7 +33,7 @@ public class JmsConfig {
                            @Value("${kafka.topic1.partition}") int topic1Partition,
                            @Value("${kafka.topic1.replication}") short topic1Replication) {
         final NewTopic newTopic = new NewTopic(infrastructureConfig.getTopicName(), topic1Partition, topic1Replication);
-        try (kafkaAdminClient) {
+        try {
             kafkaAdminClient.createTopics(Collections.singleton(newTopic)).all().get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Failed to create a topic1", e);

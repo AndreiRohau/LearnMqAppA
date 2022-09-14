@@ -12,12 +12,6 @@ public class MainController {
     private static final String MESSAGE_EXCHANGE = "source1-out-0";
     @Value("${spring.application.name}")
     private String springApplicationName;
-    @Value("${routing.key.header}")
-    private String routingKeyHeader;
-    @Value("${mq.queue1Sink-in-0.consumer.bindingRoutingKey}")
-    private String routingKey;
-    @Value("${mq.init.q}")
-    private String initQ;
 
     @GetMapping("/test")
     public String test() {
@@ -39,7 +33,7 @@ public class MainController {
 
     @GetMapping("/source1-out-0/") // initQ
     public String sendMessageToDestination(@RequestParam String message) {
-        log.info("CALLED: #sendMessageToDestination destination={}. message={}", initQ, message);
+        log.info("CALLED: #sendMessageToDestination destination={}. message={}", "*STUB*", message);
         // destination = "source1-out-0"
         return "message-sent";
     }
