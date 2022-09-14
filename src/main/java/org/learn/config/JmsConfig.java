@@ -1,47 +1,45 @@
 package org.learn.config;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.KafkaAdminClient;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.annotation.EnableJms;
-import org.springframework.jms.core.JmsTemplate;
+
+import java.util.Collections;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 
 @Configuration
-@EnableJms
 public class JmsConfig {
-
-    @Value("${spring.activemq.broker-url}")
-    private String brokerUrl;
-    @Value("${spring.activemq.user}")
-    private String brokerUsername;
-    @Value("${spring.activemq.password}")
-    private String brokerPassword;
-
     @Bean
-    public ActiveMQConnectionFactory connectionFactory() {
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
-        connectionFactory.setBrokerURL(brokerUrl);
-        connectionFactory.setUserName(brokerUsername);
-        connectionFactory.setPassword(brokerPassword);
-        return connectionFactory;
+    public InfrastructureConfig infrastructureConfig(@Value("${spring.kafka.servers}") String kafkaUrl,
+                                                     @Value("${kafka.topic1.name}") String topic1Name) {
+        return new InfrastructureConfig(kafkaUrl, topic1Name);
     }
 
     @Bean
-    public JmsTemplate jmsQueueTemplate(ActiveMQConnectionFactory connectionFactory) {
-        return getJmsTemplate(connectionFactory, false);
+    public AdminClient kafkaAdminClient(InfrastructureConfig infrastructureConfig) {
+        Properties kafkaProperties = new Properties();
+        kafkaProperties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, infrastructureConfig.getKafkaUrl());
+        return AdminClient.create(kafkaProperties);
     }
 
     @Bean
-    public JmsTemplate jmsTopicTemplate(ActiveMQConnectionFactory connectionFactory) {
-        return getJmsTemplate(connectionFactory, true);
+    public NewTopic topic1(InfrastructureConfig infrastructureConfig, AdminClient kafkaAdminClient,
+                           @Value("${kafka.topic1.partition}") int topic1Partition,
+                           @Value("${kafka.topic1.replication}") short topic1Replication) {
+        final NewTopic newTopic = new NewTopic(infrastructureConfig.getTopicName(), topic1Partition, topic1Replication);
+        try (kafkaAdminClient) {
+            kafkaAdminClient.createTopics(Collections.singleton(newTopic)).all().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Failed to create a topic1", e);
+        }
+        return newTopic;
     }
 
-    private JmsTemplate getJmsTemplate(ActiveMQConnectionFactory connectionFactory, boolean isPubSumDomain) {
-        JmsTemplate template = new JmsTemplate();
-        template.setConnectionFactory(connectionFactory);
-        template.setPubSubDomain(isPubSumDomain);
-        return template;
-    }
+
 }

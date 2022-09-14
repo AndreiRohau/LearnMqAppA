@@ -48,11 +48,10 @@
             </exclusions>
         </dependency>
 
-        <!-- ActiveMQ -->
+        <!-- org.apache.kafka:kafka-clients -->
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-all</artifactId>
-            <version>${activemq.version}</version>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
         </dependency>
     </dependencies>
 

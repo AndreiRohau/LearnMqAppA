@@ -1,9 +1,6 @@
 # ProjectA title
-ProjectB is here https://github.com/AndreiRohau/LearnAppB/tree/
+ProjectB is here https://github.com/AndreiRohau/LearnAppB/tree/mq/kafka/t1
 
 rest info
 
-for rabbitmq hosting free.
-https://customer.cloudamqp.com/instance
-
-image
+![](kafka-t1-t2.png)
