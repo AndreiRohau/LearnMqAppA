@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,24 +50,31 @@ public class JmsConfig {
         return new DefaultKafkaProducerFactory<>(props);
     }
 
-//    @Bean
-//    public ReplyingKafkaTemplate<String, Msg, Msg> replyingKafkaTemplate(@Value("${kafka.topic2.name}") String topic2Name,
-//                                                                         @Value("${kafka.topic1.consumer.group.id}") String consumerGroupId,
-//                                                                         ProducerFactory<String, Msg> producerFactory,
-//                                                                         ConcurrentKafkaListenerContainerFactory<String, Msg> listenerFactory) {
-//        ConcurrentMessageListenerContainer<String, Msg> replyContainer = listenerFactory.createContainer(topic2Name);
-//        replyContainer.getContainerProperties().setMissingTopicsFatal(false);
-//        replyContainer.getContainerProperties().setGroupId(consumerGroupId);
-//        return new ReplyingKafkaTemplate<>(producerFactory, replyContainer);
-//    }
-
+    // Can send messages, sendAndReply
     @Bean
-    public KafkaTemplate<String, Msg> kafkaTemplate(ProducerFactory<String, Msg> producerFactory) {
-        return new KafkaTemplate<>(producerFactory);
+    public ReplyingKafkaTemplate<String, Msg, Msg> replyingKafkaTemplate(@Value("${kafka.topic2.name}") String topic2Name,
+                                                                         @Value("${kafka.topic1.consumer.group.id}") String consumerGroupId,
+                                                                         ProducerFactory<String, Msg> producerFactory,
+                                                                         ConcurrentKafkaListenerContainerFactory<String, Msg> kafkaListenerContainerFactory) {
+        ConcurrentMessageListenerContainer<String, Msg> replyContainer = kafkaListenerContainerFactory.createContainer(topic2Name);
+        replyContainer.getContainerProperties().setMissingTopicsFatal(false);
+        replyContainer.getContainerProperties().setGroupId(consumerGroupId);
+        return new ReplyingKafkaTemplate<>(producerFactory, replyContainer);
+    }
+
+    // Template required for @SentTo annotation
+    @Bean
+    public KafkaTemplate<String, Msg> kafkaTemplate(ProducerFactory<String, Msg> producerFactory,
+                                                    ConcurrentKafkaListenerContainerFactory<String, Msg> kafkaListenerContainerFactory) {
+        KafkaTemplate<String, Msg> kafkaTemplate = new KafkaTemplate<>(producerFactory);
+        kafkaListenerContainerFactory.getContainerProperties().setMissingTopicsFatal(false);
+        kafkaListenerContainerFactory.setReplyTemplate(kafkaTemplate);
+
+        return kafkaTemplate;
     }
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory(InfrastructureConfig infrastructureConfig,
+    public ConsumerFactory<String, Msg> consumerFactory(InfrastructureConfig infrastructureConfig,
                                                            @Value("${kafka.topic1.consumer.group.id}") String consumerGroupId) {
         final Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, infrastructureConfig.getKafkaUrl());
@@ -76,11 +85,11 @@ public class JmsConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MsgDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(props);
     }
-
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(ConsumerFactory<String, String> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, Msg> kafkaListenerContainerFactory(ConsumerFactory<String, Msg> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, Msg> kafkaListenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         kafkaListenerContainerFactory.setConsumerFactory(consumerFactory);
         return kafkaListenerContainerFactory;
     }
+
 }

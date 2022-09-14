@@ -11,4 +11,5 @@ public class Msg {
     private String uid;
     private String head;
     private String body;
+    private boolean isProcessed;
 }
