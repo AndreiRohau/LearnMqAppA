@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 import static java.time.Duration.ofSeconds;
 import static java.util.Collections.singleton;
 
-@Configuration
+
 public class TxProducerConsumerConfig {
 
     private static final String CONSUMER_GROUP_ID = "my-group-id";
@@ -27,7 +27,7 @@ public class TxProducerConsumerConfig {
     private static final String INPUT_TOPIC = "input";
 
     @Bean
-    public Runnable produce(KafkaProducer<String, String> kafkaProducerTx, KafkaConsumer<String, String> kafkaConsumerTx) {
+    public Runnable produceTx(KafkaProducer<String, String> kafkaProducerTx, KafkaConsumer<String, String> kafkaConsumerTx) {
         return () -> {
             kafkaProducerTx.initTransactions();
             try {

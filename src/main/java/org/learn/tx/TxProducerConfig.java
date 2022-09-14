@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-@Configuration
+
 public class TxProducerConfig {
 
     @Bean

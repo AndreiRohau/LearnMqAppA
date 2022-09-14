@@ -1,5 +1,5 @@
 # ProjectA title
-ProjectB is here https://github.com/AndreiRohau/LearnAppB/tree/mq/kafka/t2
+ProjectB is here https://github.com/AndreiRohau/LearnAppB/tree/mq/kafka/t3
 
 rest info
 

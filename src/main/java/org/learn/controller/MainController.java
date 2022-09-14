@@ -30,6 +30,10 @@ public class MainController {
 //    private KafkaTemplate<String, Msg> kafkaTemplate;
     @Autowired
     private ReplyingKafkaTemplate<String, Msg, Msg> replyingKafkaTemplate;
+//    @Autowired
+//    private Runnable produce;
+//    @Autowired
+//    private Runnable produceTx;
 
     @GetMapping("/v1/test")
     @Transactional
@@ -42,20 +46,36 @@ public class MainController {
         return "!!Success!!@@ sent msg=" + msg;
     }
 
-    @GetMapping("/v2/test")
-    @Transactional
-    public String testV2() {
-        log.info("test");
-        final Msg msg = new Msg(UUID.randomUUID().toString(), "head", "body", false);
-        final ProducerRecord<String, Msg> record = new ProducerRecord<>(topic1Name, msg.getUid(), msg);
-        log.info("SENDING. record=[{}]", record);
-        try {
-            ConsumerRecord<String, Msg> response = replyingKafkaTemplate.sendAndReceive(record, Duration.ofMillis(10000)).get();
-            return "!!Success!!@@ sent msg=" + response.value();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @GetMapping("/v2/test")
+//    @Transactional
+//    public String testV2() {
+//        log.info("test");
+//        final Msg msg = new Msg(UUID.randomUUID().toString(), "head", "body", false);
+//        final ProducerRecord<String, Msg> record = new ProducerRecord<>(topic1Name, msg.getUid(), msg);
+//        log.info("SENDING. record=[{}]", record);
+//        try {
+//            ConsumerRecord<String, Msg> response = replyingKafkaTemplate.sendAndReceive(record, Duration.ofMillis(10000)).get();
+//            return "!!Success!!@@ sent msg=" + response.value();
+//        } catch (InterruptedException | ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+//    @GetMapping("/v3/test")
+//    @Transactional
+//    public String testV3() {
+//        log.info("test");
+//        produce.run();
+//        return "!!Success!!@@ sent msg=v3";
+//    }
+//
+//    @GetMapping("/v4/test")
+//    @Transactional
+//    public String testV4() {
+//        log.info("test");
+//        produceTx.run();
+//        return "!!Success!!@@ sent msg=v4";
+//    }
 
     @GetMapping("/status")
     public String status() {
