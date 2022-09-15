@@ -17,6 +17,7 @@ public class TxProducerConfig {
     public Runnable produce(KafkaProducer<String, String> kafkaProducer) {
         return () -> {
             try {
+                kafkaProducer.beginTransaction();
                 final String DATA_MESSAGE_1 = "Put any space separated data here for count";
                 final String DATA_MESSAGE_2 = "Output will contain count of every word in the message";
                 Stream.of(DATA_MESSAGE_1, DATA_MESSAGE_2)
@@ -29,13 +30,14 @@ public class TxProducerConfig {
     }
 
     @Bean
-    public static KafkaProducer<String, String> kafkaProducer() {
+    public KafkaProducer<String, String> kafkaProducer() {
         final Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
         props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "prod-0");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+
         final KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(props);
         kafkaProducer.initTransactions();
         return kafkaProducer;
