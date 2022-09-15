@@ -15,7 +15,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
 
 @SpringBootApplication
 @EnableKafka
