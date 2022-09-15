@@ -32,7 +32,9 @@ public class Task3Application {
     public static void main(String[] args) {
         SpringApplication.run(Task3Application.class, args);
     }
-
+    // 14:qweer
+    // 14:ty
+    // -> 14:qweer∞∞∞14:ty
     @Bean
     public KStream<Long, String> kStreamT31(StreamsBuilder kStreamBuilder) {
         return firstStepProcessing(kStreamBuilder, t31);

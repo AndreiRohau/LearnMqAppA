@@ -32,7 +32,8 @@ public class Task2Application {
     public static void main(String[] args) {
         SpringApplication.run(Task2Application.class, args);
     }
-
+    // qwerqwerqwer a1234 1234 aqwerqwerqwerqwer
+    // -> a1234 aqwerqwerqwerqwer
     @Bean
     public Map<String, KStream<Integer, String>> branches(StreamsBuilder kStreamBuilder) {
         KStream<Integer, String> kStream = kStreamBuilder.stream(t20, Consumed.with(Serdes.Integer(), Serdes.String()));
