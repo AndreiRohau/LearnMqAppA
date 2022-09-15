@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.0</version>
+        <version>2.5.13</version>
         <relativePath />
     </parent>
 
@@ -52,11 +52,37 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
+            <version>3.2.0</version>
         </dependency>
         <!-- org.springframework.kafka:spring-kafka -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <!-- TASK 1 -->
+        <!--
+        org.springframework.kafka:spring-kafka
+        org.apache.kafka:kafka-streams
+        org.apache.kafka:kafka-clients
+        org.apache.kafka:kafka-streams-test-utils
+        org.apache.kafka:kafka_2.13
+        -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+            <version>3.2.0</version>
+<!--            <version>2.8.0</version>-->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams-test-utils</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.13</artifactId>
+            <version>3.2.0</version>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,17 @@
+---> to kafka
+Desktop\learning-MQ\4-kafka-stream\hw\kafka_2.12-3.2.0
+
+---> ZooKeeper
+bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+
+---> Kafka server
+bin\windows\kafka-server-start.bat config\server.properties
+
+---> Topic create
+bin\windows\kafka-topics.bat -create -bootstrap-server localhost:9092 -replication-factor 1 -partitions 1 -topic MY_TOPIC_NAME_1
+
+---> CONSUMER console
+bin\windows\kafka-console-consumer.bat -bootstrap-server localhost:9092 -topic MY_CUSTOM_NAME_1 -from-beginning
+
+---> PRODUCER console
+bin\windows\kafka-console-producer.bat -broker-list localhost:9092 -topic MY_CUSTOM_NAME_1
