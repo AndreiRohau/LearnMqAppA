@@ -40,7 +40,7 @@ public class Task2Application {
         KStream<Integer, String> kStream = kStreamBuilder.stream(t20, Consumed.with(Serdes.Integer(), Serdes.String()));
         BranchedKStream<Integer, String> branchedKStream = kStream
                 .flatMap((k, v) -> getKeyValues(v))
-                .peek((k, v) -> println("tmp", k, v))
+                .peek((k, v) -> println("PRE", k, v))
                 .split(Named.as("words-"))
                 .branch((key, value) -> value.length() >= 10, Branched.as("long"))
                 .branch((key, value) -> value.length() < 10, Branched.as("short"));
@@ -67,13 +67,13 @@ public class Task2Application {
         KStream<Integer, String> merged =
                 branches.get("words-long").filter((k,v) -> v.contains("a"))
                 .merge(branches.get("words-short").filter((k,v) -> v.contains("a")))
-                        .peek((k,v) -> println("FINAL peek HAS [A]", k, v));
+                        .peek((k,v) -> println("PASSED MESSAGE", k, v));
 
         return merged;
     }
 
     private void println(String status, Integer k, String v) {
-        System.out.println(status + " k=" + k + " v=" + v);
+        System.out.println(status + ": KEY = " + k + ", VALUE = " + v);
     }
 
 }
