@@ -39,7 +39,8 @@ public class MainController {
     @Transactional
     public String test() {
         log.info("test");
-        final String ruid = UUID.randomUUID().toString();
+//        final String ruid = UUID.randomUUID().toString();
+        final String ruid = "ANY_UNQ_ID";
         final Msg msg = new Msg(ruid, "head", "body", false);
         log.info("SENDING. MSG=[{}]", msg);
         replyingKafkaTemplate.send(topic1Name, ruid, msg);
