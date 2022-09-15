@@ -22,10 +22,6 @@ import java.util.stream.Collectors;
 @EnableKafkaStreams
 public class Task2Application {
     public static final String STREAMS_SHUTDOWN_HOOK = "streams-shutdown-hook";
-    @Value("${kafka.t11.name}")
-    private String t11;
-    @Value("${kafka.t12.name}")
-    private String t12;
     @Value("${spring.kafka.streams.application-id}")
     private String appId;
     @Value("${spring.kafka.streams.bootstrap-servers}")
