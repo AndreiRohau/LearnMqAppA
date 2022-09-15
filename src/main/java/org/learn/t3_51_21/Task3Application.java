@@ -43,9 +43,9 @@ public class Task3Application {
         return firstStepProcessing(kStreamBuilder, t32);
     }
 
-    private KStream<Long, String> firstStepProcessing(StreamsBuilder kStreamBuilder, @Value("${kafka.t31.name}") String topic) {
+    private KStream<Long, String> firstStepProcessing(StreamsBuilder kStreamBuilder, String topic) {
         return kStreamBuilder
-                .stream(topic, Consumed.with(Serdes.Integer(), Serdes.String()))
+                .stream(topic, Consumed.with(Serdes.Long(), Serdes.String()))
                 .filter((k, v) -> nonNull(v) && v.contains(":"))
                 .map((k, v) -> KeyValue.pair(Long.parseLong(v.split(":")[0]), v))
                 .peek(print("PEEK"));
